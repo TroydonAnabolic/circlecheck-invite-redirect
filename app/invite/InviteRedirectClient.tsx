@@ -13,12 +13,23 @@ export default function InviteRedirectClient({ inviteId }: InviteRedirectClientP
     useEffect(() => {
         if (!inviteId) return;
 
-        const appUrl = `circlecheck://invites?invite_id=${inviteId}`;
+        const isAndroid = /Android/i.test(navigator.userAgent);
 
-        // Try to open the app immediately
-        window.location.href = appUrl;
+        if (isAndroid) {
+            const intentUrl = `intent://invites?invite_id=${inviteId}` +
+                '#Intent;' +
+                'scheme=circlecheck;' +
+                'package=com.circlecheck.app;' +
+                `S.browser_fallback_url=${encodeURIComponent(ANDROID_PLAY_URL)};` +
+                'end';
 
-        // After 1.5s, if app didn't open, show fallback content
+            window.location.href = intentUrl;
+        } else {
+            // Fallback for iOS/others: try the custom scheme directly
+            const appUrl = `circlecheck://invites?invite_id=${inviteId}`;
+            window.location.href = appUrl;
+        }
+
         const timer = setTimeout(() => {
             const el = document.getElementById('fallback');
             if (el) el.style.display = 'block';
