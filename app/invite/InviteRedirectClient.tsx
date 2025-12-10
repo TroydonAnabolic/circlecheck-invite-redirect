@@ -11,9 +11,17 @@ interface InviteRedirectClientProps {
 
 export default function InviteRedirectClient({ inviteId }: InviteRedirectClientProps) {
     useEffect(() => {
-        if (!inviteId) return;
+        if (!inviteId) {
+            console.log('[InviteRedirectClient] No inviteId, skipping redirect');
+            return;
+        }
 
         const isAndroid = /Android/i.test(navigator.userAgent);
+        const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown';
+
+        console.log('[InviteRedirectClient] inviteId:', inviteId);
+        console.log('[InviteRedirectClient] userAgent:', userAgent);
+        console.log('[InviteRedirectClient] isAndroid:', isAndroid);
 
         if (isAndroid) {
             const intentUrl = `intent://invites?invite_id=${inviteId}` +
@@ -23,14 +31,17 @@ export default function InviteRedirectClient({ inviteId }: InviteRedirectClientP
                 `S.browser_fallback_url=${encodeURIComponent(ANDROID_PLAY_URL)};` +
                 'end';
 
+            console.log('[InviteRedirectClient] Navigating to Android intent URL:', intentUrl);
             window.location.href = intentUrl;
         } else {
             // Fallback for iOS/others: try the custom scheme directly
             const appUrl = `circlecheck://invites?invite_id=${inviteId}`;
+            console.log('[InviteRedirectClient] Navigating to custom scheme URL:', appUrl);
             window.location.href = appUrl;
         }
 
         const timer = setTimeout(() => {
+            console.log('[InviteRedirectClient] Showing fallback content');
             const el = document.getElementById('fallback');
             if (el) el.style.display = 'block';
         }, 1500);
