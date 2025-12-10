@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+
 
 const ANDROID_PLAY_URL =
     'https://play.google.com/store/apps/details?id=com.circlecheck.app';
 
-interface InviteRedirectClientProps {
-    inviteId: string | null;
-}
+export default function InviteRedirectClient() {
+    const searchParams = useSearchParams();
+    const inviteId = searchParams.get('invite_id');
 
-export default function InviteRedirectClient({ inviteId }: InviteRedirectClientProps) {
     useEffect(() => {
         if (!inviteId) {
             console.log('[InviteRedirectClient] No inviteId, skipping redirect');
