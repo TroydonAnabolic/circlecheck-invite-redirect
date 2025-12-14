@@ -65,6 +65,12 @@ export default function RootLayout({
                 Home
               </Link>
               <Link
+                href="/help"
+                style={{ textDecoration: "none", color: "#4b5563" }}
+              >
+                Help
+              </Link>
+              <Link
                 href="/privacy-policy"
                 style={{ textDecoration: "none", color: "#4b5563" }}
               >
